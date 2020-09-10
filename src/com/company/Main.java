@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
@@ -11,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         Element[][] matrix = new Element[MATRIX_HEIGHT][MATRIX_WIDTH];
 
-        // Заполняем матрицу
+        // Заполняем матрицу, при этом начало координатной сетки находится в левом верхнем углу
         for (int y = 0; y < MATRIX_HEIGHT; y++) {
             for (int x = 0; x < MATRIX_WIDTH; x++) {
                 matrix[y][x] = new Element(x, y);
@@ -20,12 +21,12 @@ public class Main {
 
         print(matrix);
 
-        // Генерируем "иголку", которую будет искать
+        // Генерируем "иголку", которую будем искать
         Element needle = generateNeedle();
         System.out.printf("\nИскомый элемент = (%d;%d)\n", needle.x, needle.y);
 
         // Ищем соседей
-        ArrayList<Element> neighbors = search(needle, matrix);
+        List<Element> neighbors = search(needle, matrix);
 
         if (neighbors == null) {
             System.out.println("\nСоседей нет");
@@ -72,7 +73,7 @@ public class Main {
      * @param source Матрица
      * @return Список соседей
      */
-    private static ArrayList<Element> search(Element needle, Element[][] source) {
+    private static List<Element> search(Element needle, Element[][] source) {
         if (needle.x >= MATRIX_WIDTH || needle.x < 0) {
             return null;
         }
@@ -81,16 +82,16 @@ public class Main {
             return null;
         }
 
-        // Находим верхнуюю и нижнюю границы искомой области соседей
+        // Находим верхнюю и нижнюю границы искомой области соседей
         int upperBoundY = needle.y > 0 ? needle.y - 1 : 0;
-        int bottomBoundY = needle.y < MATRIX_HEIGHT - 1 ? needle.y + 1 : MATRIX_HEIGHT;
+        int bottomBoundY = needle.y < MATRIX_HEIGHT - 1 ? needle.y + 1 : MATRIX_HEIGHT - 1;
 
         // Находим левую и правую границы искомой области соседей
         int leftBoundX = needle.x > 0 ? needle.x - 1 : 0;
-        int rightBoundX = needle.x < MATRIX_WIDTH - 1 ? needle.x + 1 : MATRIX_WIDTH;
+        int rightBoundX = needle.x < MATRIX_WIDTH - 1 ? needle.x + 1 : MATRIX_WIDTH - 1;
 
         // Все элементы внутри этой области (за исключением "иголки") - искомые соседи
-        ArrayList<Element> result = new ArrayList<>();
+        List<Element> result = new ArrayList<>();
         for (int y = upperBoundY; y <= bottomBoundY; y++) {
             for (int x = leftBoundX; x <= rightBoundX; x++) {
                 if (y == needle.y && x == needle.x) {
